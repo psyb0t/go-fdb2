@@ -5,6 +5,7 @@ import (
 	"path"
 )
 
+// Collection is the object representing a collection of collections and/or documents
 type Collection struct {
 	db     *FDB
 	parent *Collection
@@ -12,6 +13,7 @@ type Collection struct {
 	name   string
 }
 
+// NewDocument returns a new Document object reference with the given name
 func (c *Collection) NewDocument(name string) *Document {
 	documentPath := path.Join(c.path, name)
 
@@ -25,6 +27,8 @@ func (c *Collection) NewDocument(name string) *Document {
 	return document
 }
 
+// NewCollection initializes a collection directory as a child to the parent collection
+// and returns a Collection object reference
 func (c *Collection) NewCollection(name string) (*Collection, error) {
 	collectionPath := path.Join(c.path, name)
 	err := os.MkdirAll(collectionPath, 0700)
@@ -42,6 +46,7 @@ func (c *Collection) NewCollection(name string) (*Collection, error) {
 	return collection, nil
 }
 
+// Delete removes the collection and all its children
 func (c *Collection) Delete() error {
 	return os.RemoveAll(c.path)
 }

@@ -13,8 +13,10 @@ type Collection struct {
 	name   string
 }
 
-// NewDocument returns a new Document object reference with the given name
-func (c *Collection) NewDocument(name string) *Document {
+// Document returns a Document object reference with the given name
+func (c *Collection) Document(name string) *Document {
+	name = CleanPathString(name)
+
 	documentPath := path.Join(c.path, name)
 
 	document := &Document{
@@ -27,9 +29,11 @@ func (c *Collection) NewDocument(name string) *Document {
 	return document
 }
 
-// NewCollection initializes a collection directory as a child to the parent collection
+// Collection initializes a collection directory as a child to the parent collection
 // and returns a Collection object reference
-func (c *Collection) NewCollection(name string) (*Collection, error) {
+func (c *Collection) Collection(name string) (*Collection, error) {
+	name = CleanPathString(name)
+
 	collectionPath := path.Join(c.path, name)
 	err := os.MkdirAll(collectionPath, 0700)
 	if err != nil {
@@ -46,7 +50,8 @@ func (c *Collection) NewCollection(name string) (*Collection, error) {
 	return collection, nil
 }
 
-// Delete removes the collection and all its children
+// Delete removes the collection and all of its children
 func (c *Collection) Delete() error {
+	// todo directory locking to stop documents from being added/updated
 	return os.RemoveAll(c.path)
 }

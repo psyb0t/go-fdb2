@@ -23,8 +23,10 @@ func NewFDB(dbPath string) (*FDB, error) {
 	return db, nil
 }
 
-// NewCollection initializes a collection directory and returns a Collection object reference
-func (fdb *FDB) NewCollection(name string) (*Collection, error) {
+// Collection initializes a collection directory and returns a Collection object reference
+func (fdb *FDB) Collection(name string) (*Collection, error) {
+	name = CleanPathString(name)
+
 	collectionPath := path.Join(fdb.path, name)
 	err := os.MkdirAll(collectionPath, 0700)
 	if err != nil {

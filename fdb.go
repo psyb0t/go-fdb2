@@ -1,8 +1,13 @@
 package fdb2
 
 import (
+	"fmt"
 	"os"
-	"path"
+)
+
+const (
+	collectionExt = "fdbc"
+	documentExt   = "fdbd"
 )
 
 // FDB is the file database object which initializes the base db directory and
@@ -25,19 +30,29 @@ func NewFDB(dbPath string) (*FDB, error) {
 
 // Collection initializes a collection directory and returns a Collection object reference
 func (fdb *FDB) Collection(name string) (*Collection, error) {
-	name = CleanPathString(name)
+	collection := &Collection{
+		db:       fdb,
+		basePath: fdb.path,
+		name:     name,
+	}
 
-	collectionPath := path.Join(fdb.path, name)
-	err := os.MkdirAll(collectionPath, 0700)
+	err := collection.init()
 	if err != nil {
 		return nil, err
 	}
 
-	collection := &Collection{
-		db:   fdb,
-		path: collectionPath,
-		name: name,
+	return collection, nil
+}
+
+// ListCollections returns a list of collection names created under the db path
+func (fdb *FDB) ListCollections() ([]string, error) {
+	collectionNames := []string{}
+
+	expectedStrEnd := fmt.Sprintf(".%s", collectionExt)
+	collectionNames, err := ReadDirFilesWithEndingName(fdb.path, expectedStrEnd)
+	if err != nil {
+		return []string{}, err
 	}
 
-	return collection, nil
+	return collectionNames, nil
 }

@@ -61,3 +61,22 @@ func DeleteFile(fpath string, timeout time.Duration) error {
 
 	return ErrDeleteFileTimeout
 }
+
+// ReadDirFilesWithEndingName list all file names in the given dirpath that end with the given expectedStrEnd
+func ReadDirFilesWithEndingName(dirpath, expectedStrEnd string) ([]string, error) {
+	resultFiles := []string{}
+
+	files, err := ioutil.ReadDir(dirpath)
+	if err != nil {
+		return []string{}, err
+	}
+
+	for _, f := range files {
+		fname := f.Name()
+		if fname[len(fname)-5:] == expectedStrEnd {
+			resultFiles = append(resultFiles, fname[:len(fname)-5])
+		}
+	}
+
+	return resultFiles, nil
+}

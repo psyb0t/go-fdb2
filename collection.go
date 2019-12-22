@@ -52,6 +52,46 @@ func (c *Collection) Document(name string) (*Document, error) {
 	return document, nil
 }
 
+// DocumentGet returns the []byte content of a named document
+func (c *Collection) DocumentGet(name string) ([]byte, error) {
+	document, err := c.Document(name)
+	if err != nil {
+		return []byte(""), err
+	}
+
+	return document.Get()
+}
+
+// DocumentGetString returns the string content of a named document
+func (c *Collection) DocumentGetString(name string) (string, error) {
+	document, err := c.Document(name)
+	if err != nil {
+		return "", err
+	}
+
+	return document.GetString()
+}
+
+// DocumentSet sets the []byte content of a named document
+func (c *Collection) DocumentSet(name string, value []byte) error {
+	document, err := c.Document(name)
+	if err != nil {
+		return err
+	}
+
+	return document.Set(value)
+}
+
+// DocumentSetString sets the string content of a named document
+func (c *Collection) DocumentSetString(name, value string) error {
+	document, err := c.Document(name)
+	if err != nil {
+		return err
+	}
+
+	return document.SetString(value)
+}
+
 // ListDocuments returns a list of document names created under the collection path
 func (c *Collection) ListDocuments() ([]string, error) {
 	documentNames := []string{}

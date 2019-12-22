@@ -3,6 +3,7 @@ package fdb2
 import (
 	"fmt"
 	"os"
+	"strings"
 )
 
 const (
@@ -42,6 +43,40 @@ func (fdb *FDB) Collection(name string) (*Collection, error) {
 	}
 
 	return collection, nil
+}
+
+// CollectionSequence initializes a collection sequence and returns the last one
+func (fdb *FDB) CollectionSequence(sequenceName string) (*Collection, error) {
+	var parentCollection *Collection
+	var lastCollection *Collection
+
+	collectionNames := strings.Split(sequenceName, "/")
+	for _, collectionName := range collectionNames {
+		var collection *Collection
+		var err error
+
+		if parentCollection == nil {
+			collection, err = fdb.Collection(collectionName)
+			if err != nil {
+				return nil, err
+			}
+
+			parentCollection = collection
+			lastCollection = collection
+
+			continue
+		}
+
+		collection, err = parentCollection.Collection(collectionName)
+		if err != nil {
+			return nil, err
+		}
+
+		parentCollection = collection
+		lastCollection = collection
+	}
+
+	return lastCollection, nil
 }
 
 // ListCollections returns a list of collection names created under the db path

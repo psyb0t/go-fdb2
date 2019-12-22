@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"strings"
 )
 
 // Collection is the object representing a collection of collections and/or documents
@@ -84,6 +85,24 @@ func (c *Collection) Collection(name string) (*Collection, error) {
 	}
 
 	return collection, nil
+}
+
+// CollectionSequence initializes a collection sequence and returns the last one
+func (c *Collection) CollectionSequence(sequenceName string) (*Collection, error) {
+	parentCollection := c
+	var lastCollection *Collection
+
+	collectionNames := strings.Split(sequenceName, "/")
+	for _, collectionName := range collectionNames {
+		collection, err := parentCollection.Collection(collectionName)
+		if err != nil {
+			return nil, err
+		}
+
+		lastCollection = collection
+	}
+
+	return lastCollection, nil
 }
 
 // ListCollections returns a list of collection names created under the collection path

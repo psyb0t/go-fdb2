@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// CleapPathStrings removes illegal characters from the given path string
+// CleanPathString removes illegal characters from the given path string
 func CleanPathString(pathString string) string {
 	pathString = strings.ToLower(pathString)
 

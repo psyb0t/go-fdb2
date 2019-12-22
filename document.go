@@ -15,7 +15,6 @@ type Document struct {
 	basePath   string
 	path       string
 	name       string
-	value      []byte
 }
 
 func (d *Document) init() error {
@@ -35,6 +34,10 @@ func (d *Document) init() error {
 
 // Set sets the []byte value of the document
 func (d *Document) Set(value []byte) error {
+	if d.path == "" {
+		return ErrEmptyDocumentPath
+	}
+
 	err := WriteFile(d.path, value, time.Second*5)
 	if err != nil {
 		return err
@@ -50,6 +53,10 @@ func (d *Document) SetString(value string) error {
 
 // Get returns the []byte value of the document
 func (d *Document) Get() ([]byte, error) {
+	if d.path == "" {
+		return []byte(""), ErrEmptyDocumentPath
+	}
+
 	value, err := ioutil.ReadFile(d.path)
 	if err != nil {
 		if os.IsNotExist(err) {

@@ -53,15 +53,15 @@ func (c *Collection) Document(name string) (*Document, error) {
 
 // ListDocuments returns a list of document names created under the collection path
 func (c *Collection) ListDocuments() ([]string, error) {
-	collectionNames := []string{}
+	documentNames := []string{}
 
 	expectedStrEnd := fmt.Sprintf(".%s", documentExt)
-	collectionNames, err := ReadDirFilesWithEndingName(c.path, expectedStrEnd)
+	documentNames, err := ReadDirFilesWithEndingName(c.path, expectedStrEnd)
 	if err != nil {
 		return []string{}, err
 	}
 
-	return collectionNames, nil
+	return documentNames, nil
 }
 
 // Collection initializes a collection directory as a child to the parent collection

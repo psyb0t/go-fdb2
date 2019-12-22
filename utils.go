@@ -10,6 +10,8 @@ import (
 
 // CleapPathStrings removes illegal characters from the given path string
 func CleanPathString(pathString string) string {
+	pathString = strings.ToLower(pathString)
+
 	itemsToClean := []string{"/", "\n", "\r\n", "\\"}
 	for _, itemToClean := range itemsToClean {
 		pathString = strings.Replace(pathString, itemToClean, "", -1)
